@@ -14,6 +14,7 @@ PomodoroTechnique::PomodoroTechnique(uint8_t _pin_barDclk,
 
 void PomodoroTechnique::init() {
   energyBar.init();
+  firebaseDatabasePT.init();
 }
 
 void PomodoroTechnique::setPomodorDuration_min(uint8_t _pomodorDuration_min) {

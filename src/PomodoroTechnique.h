@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "EnergyBar.h"
+#include "FirebaseDatabasePT.h"
 
 class PomodoroTechnique {
 private:
@@ -12,6 +13,7 @@ private:
   uint8_t pin_irDistInterupter;
   boolean isPersonSitting;
   uint16_t durationPerPoint_ms;
+  FirebaseDatabasePT firebaseDatabasePT;
 public:
   PomodoroTechnique(uint8_t _pin_barDclk,
       uint8_t _pin_barDi,
