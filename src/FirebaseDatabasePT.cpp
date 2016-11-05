@@ -1,5 +1,9 @@
 #include "FirebaseDatabasePT.h"
 
+FirebaseDatabasePT::FirebaseDatabasePT() {
+
+}
+
 void FirebaseDatabasePT::init() {
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);

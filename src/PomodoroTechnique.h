@@ -8,12 +8,16 @@
 class PomodoroTechnique {
 private:
   uint8_t energy;
-  uint32_t lastCheck_ms;
+  uint32_t pomodoroDuration_min;
+  uint64_t lastSitCheck_ms;
+  uint64_t nextConfigCheck_ms;
   EnergyBar energyBar;
   uint8_t pin_irDistInterupter;
   boolean isPersonSitting;
   uint16_t durationPerPoint_ms;
   FirebaseDatabasePT firebaseDatabasePT;
+  void saveEnergy();
+  void checkConfig();
 public:
   PomodoroTechnique(uint8_t _pin_barDclk,
       uint8_t _pin_barDi,
