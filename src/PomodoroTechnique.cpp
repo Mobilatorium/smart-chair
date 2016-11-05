@@ -10,6 +10,7 @@ PomodoroTechnique::PomodoroTechnique(uint8_t _pin_barDclk,
   energy = 255;
   setPomodorDuration_min(_pomodorDuration_min);
   lastSitCheck_ms = 0;
+  nextConfigCheck_ms = 0;
 }
 
 void PomodoroTechnique::init() {
@@ -38,7 +39,12 @@ void PomodoroTechnique::check() {
     if (digitalRead(pin_irDistInterupter) == 0) {
       if (isPersonSitting) {
         isPersonSitting = 0;
-        Serial.println("set");
+        Serial.println("sat down");
+        Firebase.push("/satdown", millis() - initTime_s + unixTime_s);
+        if (Firebase.failed()) {
+            Serial.print("setting /energy failed:");
+            Serial.println(Firebase.error()); //TODO fix firebase HTTP client error msg
+        }
       } else {
         int energyChange = (millis() - lastSitCheck_ms) / durationPerPoint_ms;
         if (energy > energyChange) {
@@ -53,6 +59,11 @@ void PomodoroTechnique::check() {
       if (!isPersonSitting) {
         isPersonSitting = 1;
         Serial.println("got up");
+        Firebase.push("/gotup", millis() - initTime_s + unixTime_s);
+        if (Firebase.failed()) {
+            Serial.print("setting /energy failed:");
+            Serial.println(Firebase.error()); //TODO fix firebase HTTP client error msg
+        }
       } else {
         int energyChange = 5 * (millis() - lastSitCheck_ms)
             / durationPerPoint_ms; //energy restored faster than spend
@@ -89,6 +100,7 @@ void PomodoroTechnique::checkConfig() {
   /*Firebase arduino lib has method for streaming pobject from FirebaseDatabase
   but there is issue that it's not possible to write to base during streaming
   */
+  Serial.println("checkConfig");
   int pomodoroDurationFb_min = Firebase.getInt("PomodoroDuration");
   if (Firebase.failed()) {
       Serial.print("getting /PomodoroDuration failed:");
