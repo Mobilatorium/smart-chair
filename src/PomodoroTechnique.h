@@ -4,9 +4,12 @@
 #include <Arduino.h>
 #include "EnergyBar.h"
 #include "FirebaseDatabasePT.h"
+#include "NtpClient.h"
 
 class PomodoroTechnique {
 private:
+  uint32_t unixTime_s;
+  uint32_t initTime_s;
   uint8_t energy;
   uint32_t pomodoroDuration_min;
   uint64_t lastSitCheck_ms;

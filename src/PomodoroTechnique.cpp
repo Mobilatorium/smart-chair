@@ -16,6 +16,10 @@ void PomodoroTechnique::init() {
   energyBar.init();
   firebaseDatabasePT.init();
   checkConfig();
+  NtpClient ntpClient;
+  ntpClient.init();
+  unixTime_s = ntpClient.getNtpTime();
+  initTime_s = millis() / 1000;
 }
 
 void PomodoroTechnique::setPomodorDuration_min(uint8_t _pomodorDuration_min) {
