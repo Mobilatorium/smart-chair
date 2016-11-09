@@ -3,9 +3,10 @@
 
 /*Create pomodoroTechnique with Led bar on pins 2 (DCLK) and
 13 (DI) (Digital3 on WiolLink) with forward directions of LED
-and IR Distance Interupter on 14 pin and duration 2 minuts
+and IR Distance Interupter on 14 pin, duration 2 minuts and
+range threshold 15 cm
 */
-PomodoroTechnique pomodoroTechnique(2, 13, 14, 2);
+PomodoroTechnique pomodoroTechnique(2, 13, 14, 2, 15);
 
 
 void setup() {

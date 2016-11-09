@@ -2,12 +2,14 @@
 
 PomodoroTechnique::PomodoroTechnique(uint8_t _pin_barDclk,
     uint8_t _pin_barDi,
-    uint8_t _pin_irDistInterupter,
-    uint8_t _pomodorDuration_min) :
-    energyBar (_pin_barDclk, _pin_barDi, 0) {
-  pin_irDistInterupter = _pin_irDistInterupter;
-  pinMode(pin_irDistInterupter, INPUT);
+    uint8_t _pin_ultrasonicRangeFinder,
+    uint8_t _pomodorDuration_min,
+    uint8_t _rangeThreshold) :
+    energyBar (_pin_barDclk, _pin_barDi, 0),
+    ultrasonic (_pin_ultrasonicRangeFinder) {
+  rangeThreshold = _rangeThreshold;
   energy = 255;
+  saveEnergy();
   setPomodorDuration_min(_pomodorDuration_min);
   lastSitCheck_ms = 0;
   nextConfigCheck_ms = 0;
@@ -36,7 +38,10 @@ uint8_t PomodoroTechnique::getEnergy() {
 
 void PomodoroTechnique::check() {
   if (lastSitCheck_ms + 1000 < millis()) {
-    if (digitalRead(pin_irDistInterupter) == 0) {
+    int range = ultrasonic.MeasureInCentimeters();
+    Serial.print("ultrasonic = ");
+    Serial.println(range);
+    if (range < rangeThreshold) {
       if (isPersonSitting) {
         isPersonSitting = 0;
         Serial.println("sat down");
