@@ -1,18 +1,19 @@
 #include "Energybar.h"
 
-EnergyBar::EnergyBar(uint8_t _pin_dclk, uint8_t _pin_di, uint8_t _direction)
-    : ledBar(_pin_dclk, _pin_di, _direction) {
+EnergyBar::EnergyBar(uint8_t pinDclk, uint8_t pinDi, uint8_t direction)
+    : _ledBar(pinDclk, pinDi, direction) {
 
 }
 
 void EnergyBar::init() {
-  ledBar.begin();
+  _ledBar.begin();
+  setEnergy(255);
 }
 
-void EnergyBar::setEnergy(uint8_t _energy) {
+void EnergyBar::setEnergy(uint8_t energy) {
   uint16_t barsStatus = 1;
-  for (uint8_t i = 1; i < 10, _energy >= 25 * i; ++i) {
+  for (uint8_t i = 1; i < 10, energy >= 25 * i; ++i) {
       bitSet(barsStatus, i);
   }
-  ledBar.setBits(barsStatus);
+  _ledBar.setBits(barsStatus);
 }

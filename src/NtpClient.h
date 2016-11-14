@@ -7,17 +7,20 @@ const uint16_t NTP_PACKET_SIZE = 48;
 const unsigned long seventyYears = 2208988800UL;
 
 class NtpClient {
-private:
-  uint16_t localPort;      // local port to listen for UDP packets
-
-  IPAddress ntpIpAdress;
-
-  byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming and outgoing packets
-
-  // A UDP instance to let us send and receive packets over UDP
-  WiFiUDP udp;
 public:
   NtpClient();
   void init();
   unsigned long getNtpTime();
+  
+private:
+  // local port to listen for UDP packets
+  uint16_t _localPort;
+
+  IPAddress _ntpIpAdress;
+
+  //buffer to hold incoming and outgoing packets
+  byte _packetBuffer[NTP_PACKET_SIZE];
+
+  //A UDP instance to let us send and receive packets over UDP
+  WiFiUDP _udp;
 };
