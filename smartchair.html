@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'
+        'http://www.w3.org/TR/html4/loose.dtd'>
+<html>
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+    <title>Smart chair control panel</title>
+</head>
+<body>
+<style>
+    body {
+        padding: 20px;
+    }
+
+    p {
+        margin: 0;
+        padding: 0;
+    }
+
+    .battery {
+        position: relative;
+
+        width: 100px;
+        height: 300px;
+
+        border: 2px solid black;
+        background: #eee;
+    }
+    .battery__cell {
+        box-sizing: border-box;
+
+        position: relative;
+
+        height: 10%;
+
+        border: 2px solid black;
+    }
+    .battery__cell:last-child {
+        background-color: red;
+    }
+    .battery__progress {
+        overflow: hidden;
+
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        background: #8DE051;
+    }
+    .battery__progress:before {
+        content: '';
+
+        position: absolute;
+        bottom: 30px;
+        left: 0;
+        right: 0;
+
+        height: 30px;
+
+        background-color: orange;
+    }
+
+    .form {
+        margin-top: 30px;
+    }
+    .form__row {
+        margin-top: 10px;
+    }
+    .form__label {
+        display: inline-block;
+
+        width: 160px;
+    }
+    .form__input{
+        width: 100px;
+    }
+    .form__submit {
+        margin-top: 20px;
+    }
+</style>
+<div class="battery">
+    <p class="battery__progress" id="battery-progress" />
+    <p class="battery__cell" />
+    <p class="battery__cell" />
+    <p class="battery__cell" />
+    <p class="battery__cell" />
+    <p class="battery__cell" />
+    <p class="battery__cell" />
+    <p class="battery__cell" />
+    <p class="battery__cell" />
+    <p class="battery__cell" />
+    <p class="battery__cell" />
+</div>
+<div class="form">
+    <div class="form__row">
+        <label
+                class="form__label"
+                for="restorationDuration">
+                Restoration Duration
+        </label>
+        <input class='form__input'
+               type='text'
+               onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+               id='restorationDuration'
+               readonly>
+        </input>
+    </div>
+    <div class="form__row">
+        <label
+                class="form__label"
+                for="sittingDuration">
+                Sitting Duration
+        </label>
+        <input class='form__input'
+               type='text'
+               onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+               id='sittingDuration'
+               readonly>
+        </input>
+    </div>
+    <button class="form__submit" id="ok"> OK </button>
+</div>
+</body>
+<script src='https://www.gstatic.com/firebasejs/3.6.0/firebase.js'></script>
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "",
+        authDomain: "",
+        databaseURL: "",
+        storageBucket: "",
+        messagingSenderId: ""
+    };
+    firebase.initializeApp(config);
+
+    var energyRef = firebase.database().ref('energy'), //from 0 to 255
+        sittingDurationRef = firebase.database().ref('sittingDuration'),
+        restorationDurationRef = firebase.database().ref('restorationDuration'),
+        sittingDuration = undefined,
+        restorationDuration = undefined;
+
+    var _batteryProgress = document.getElementById('battery-progress'),
+        _sittingDuration = document.getElementById('sittingDuration'),
+        _restorationDuration = document.getElementById('restorationDuration');
+
+    energyRef.on('value', function(snapshot) {
+        var energy = snapshot.val(),
+            progress = energy / 255 * 100;
+
+        _batteryProgress.style.height = progress + '%';
+
+        if (!progress) {
+            alert('Please, take a break.');
+        }
+    });
+
+    sittingDurationRef.on('value', function(snapshot) {
+        sittingDuration  = snapshot.val();
+        _sittingDuration.value = sittingDuration;
+        _sittingDuration.removeAttribute('readonly');
+    });
+
+    restorationDurationRef.on('value', function(snapshot) {
+        restorationDuration  = snapshot.val();
+        _restorationDuration.value = restorationDuration;
+        _restorationDuration.removeAttribute('readonly');
+    });
+
+    document.getElementById('ok').onclick = function () {
+        if (document.getElementById('restorationDuration').value !== "0" &&
+                _restorationDuration.value !== undefined &&
+                _restorationDuration.value !== "" &&
+                _sittingDuration.value !== "0" &&
+                _sittingDuration.value !== undefined &&
+                _sittingDuration.value !== "") {
+            firebase.database().ref('/').update(
+                    {
+                        restorationDuration: parseInt(_restorationDuration.value),
+                        sittingDuration: parseInt(_sittingDuration.value)
+                    }
+            );
+        } else {
+            _restorationDuration.value = restorationDuration;
+            _sittingDuration.value = sittingDuration;
+        }
+    };
+
+
+
+</script>
+
+</html>
