@@ -7,9 +7,10 @@ const int kPinUltrasonicRangeFinder = 14;
 const int kSittingDurationInSec = 2*60;
 const int kRestorationDuration_s = 30;
 const int kRangeThreshold = 10;
+const int kPinVibrationMotor = 5;
 
 SmartChair smartChair(kPinBarDclk, kPinBarDi, kPinUltrasonicRangeFinder,
-    kSittingDurationInSec, kRestorationDuration_s, kRangeThreshold);
+    kPinVibrationMotor, kSittingDurationInSec, kRestorationDuration_s, kRangeThreshold);
 
 void setup() {
   //Turn on GPIO on Wio Board

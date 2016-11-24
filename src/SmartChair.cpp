@@ -3,6 +3,7 @@
 SmartChair::SmartChair(uint8_t pinBarDclk,
     uint8_t pinBarDi,
     uint8_t pinUltrasonicRangeFinder,
+    uint8_t pinVibrationMotor,
     uint8_t sittingDurationInSec,
     uint8_t restorationDurationInSec,
     uint8_t rangeThreshold) :
@@ -13,6 +14,9 @@ SmartChair::SmartChair(uint8_t pinBarDclk,
   _rangeThreshold = rangeThreshold;
   _lastSitCheck_ms = 0;
   _nextConfigCheck_ms = 0;
+  _pinVibrationMotor = pinVibrationMotor;
+  pinMode(_pinVibrationMotor, OUTPUT);
+  vibrationState = LOW;
 }
 
 void SmartChair::init() {
@@ -51,12 +55,16 @@ void SmartChair::check() {
         } else if (_energy != 0) {
           _energy = 0;
           saveEnergy();
+        } else {
+          digitalWrite(_pinVibrationMotor, !vibrationState);
+          vibrationState = !vibrationState;
         }
       }
     } else {
       if (!_isPersonSitting) {
         _isPersonSitting = 1;
         Serial.println("got up");
+        digitalWrite(_pinVibrationMotor, LOW);
         _firebaseDatabaseSC.standUp();
       } else {
         int energyChange = (millis() - _lastSitCheck_ms) /

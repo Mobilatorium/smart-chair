@@ -11,6 +11,7 @@ public:
   SmartChair(uint8_t pinBarDclk,
       uint8_t pinBarDi,
       uint8_t pinUltrasonicRangeFinder,
+      uint8_t pinVibrationMotor,
       uint8_t sittingDurationInSec,
       uint8_t restorationDurationInSec,
       uint8_t rangeThreshold);
@@ -30,6 +31,8 @@ public:
 
 private:
   uint8_t _energy;
+  uint8_t _pinVibrationMotor;
+  bool vibrationState;
   uint32_t _secittingDurationInSec;
   uint32_t _restorationDurationInSec;
   uint64_t _lastSitCheck_ms;
